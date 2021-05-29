@@ -146,12 +146,12 @@ until ship:periapsis > orbitAlt
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
         }
-      else if eta:apoapsis < 15
+      else if eta:apoapsis < 1
         {
           print "                                 " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
-          print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
+          print "ETA......: 0                " at (0,row+3).
 
           lock throttle to 1.
           set ecc to orbit:eccentricity.
