@@ -11,7 +11,7 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
-declare parameter orbit.
+declare parameter orbitAlt.
 set minSpeed to 100.
 set maxPitch to 90.
 set minPitch to 0.
@@ -53,9 +53,16 @@ print "Craft....: "+ship:shipname.
 print "Type.....: "+sizeTxt+" "+ship:type.
 print "Mass.....: "+massTons+"t".
 print "Status...: "+ship:status.
-print "Target AP: "+orbit.
+print "Target AP: "+orbitAlt.
 print "T-.......: 00:00:00".
 print "**************************************************".
+print "Msg:" at (0,8).
+
+if orbitAlt < 75000
+  {
+    print "Aborting... Target AP should be >= 75,000." at (0,20).
+    null.
+  }
 
 from {local countdown is 5.} until countdown = 0 step {set countdown to countdown - 1.}
   do
@@ -66,7 +73,6 @@ from {local countdown is 5.} until countdown = 0 step {set countdown to countdow
 
 print "0" at (18,6).
 print "LIFTOFF            " at (11,4).
-print "Msg:" at (0,8).
 print ship:shipname+" liftoff!" at (5,8).
 print "Apoapsis.: "+round(ship:apoapsis,0)+" " at (0,row+1).
 print "Periapsis: "+round(ship:periapsis,0)+" " at (0,row+2).
@@ -113,7 +119,7 @@ lock throttle to 1.
 lock steering to up + R(0,0,180).
 print "IN FLIGHT            " at (11,4).
 
-until ship:apoapsis > orbit
+until ship:apoapsis > orbitAlt
   {
     if ship:apoapsis < 45000 and ship:velocity:surface:mag >= 1500
       {
@@ -156,7 +162,7 @@ set burnFlag to false.
 print "Activating RCS                      " at (5,8).
 rcs on.
 
-until ship:periapsis > orbit
+until ship:periapsis > orbitAlt
   {
     lock steering to up + R(0,-90,180).
       if burnFlag
@@ -166,7 +172,7 @@ until ship:periapsis > orbit
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
         }
-      else if eta:apoapsis < 1
+      else if eta:apoapsis < 5
         {
           print "                                 " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
@@ -207,7 +213,7 @@ until ship:periapsis > orbit
         }
       else
         {
-          print "Waiting to reach Apoapsis        " at (5,8).
+          print "Waiting for Apoapsis            " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
