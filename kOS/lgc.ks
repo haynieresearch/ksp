@@ -20,7 +20,7 @@ set step to 5.
 set massTons to round(ship:wetmass,2).
 if massTons <= 100
   {
-    set stepSpeed to 60.
+    set stepSpeed to 75.
     set sizeTxt to "Ultralight".
   }
 else if massTons > 100 and massTons <= 250
@@ -46,9 +46,6 @@ else if massTons > 1500
 
 set solid to 25.
 set row to 9.
-
-set warpFlag1 to 0.
-set warpFlag2 to 0.
 
 clearscreen.
 print "************ LAUNCH GUIDANCE COMPUTER ************".
@@ -91,32 +88,6 @@ for eng in englist
       }.
   }.
 
-when ship:apoapsis >= orbit and altitude >= 55000 and eta:apoapsis > 30 and warpFlag1 = 1 then
-  {
-    rcs off.
-    wait 0.5.
-    set kuniverse:timewarp:warp to 4.
-  }.
-
-when eta:apoapsis <= 30 and warpFlag1 = 1 then
-  {
-    set kuniverse:timewarp:warp to 0.
-    rcs on.
-  }.
-
-when ship:apoapsis > orbit+(orbit*0.025) and eta:periapsis > 60 and warpFlag2 = 1 then
-  {
-    rcs off.
-    wait 0.5.
-    set kuniverse:timewarp:warp to 4.
-  }.
-
-when eta:periapsis <= 60 and warpFlag2 = 1 then
-  {
-    set kuniverse:timewarp:warp to 0.
-    rcs on.
-  }.
-
 when maxthrust = 0 then
   {
     print "Jettisoning boosters                   " at (5,8).
@@ -142,7 +113,7 @@ lock throttle to 1.
 lock steering to up + R(0,0,180).
 print "IN FLIGHT            " at (11,4).
 
-until ship:apoapsis > orbit-(orbit*0.1)
+until ship:apoapsis > orbit
   {
     if ship:apoapsis < 45000 and ship:velocity:surface:mag >= 1500
       {
@@ -166,21 +137,20 @@ until ship:apoapsis > orbit-(orbit*0.1)
       }
     else
       {
-        set varSpeedInc to (speed - minSpeed) / stepSpeed.
-        set varPitch to round(maxPitch - (varSpeedInc * step),1).
+        set speedIncr to (speed - minSpeed) / stepSpeed.
+        set pitch to round(maxPitch - (speedIncr * step),1).
 
-        if varPitch < minPitch set varPitch to minPitch.
+        if pitch < minPitch set pitch to minPitch.
 
-        print "Adjusting pitch to "+round(varPitch,0)+" degrees" at (5,8).
+        print "Adjusting pitch to "+round(pitch,0)+" degrees" at (5,8).
         print "Apoapsis.: "+round(ship:apoapsis,0)+" " at (0,row+1).
         print "Periapsis: "+round(ship:periapsis,0)+" " at (0,row+2).
 
-        lock steering to up + R(0,varPitch-90,180).
+        lock steering to up + R(0,pitch-90,180).
       }.
   }.
 
 lock throttle to 0.
-set warpFlag1 to 1.
 set burnFlag to false.
 
 print "Activating RCS                      " at (5,8).
@@ -188,7 +158,7 @@ rcs on.
 
 until ship:periapsis > orbit
   {
-    lock steering to prograde.
+    lock steering to up + R(0,-90,180).
       if burnFlag
         {
           print "Performing orbit burn             " at (5,8).
@@ -196,58 +166,54 @@ until ship:periapsis > orbit
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
         }
-      else if eta:apoapsis < 30
+      else if eta:apoapsis < 1
         {
           print "                                 " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
+
           lock throttle to 1.
+          set ecc to orbit:eccentricity.
+
+          until ecc < orbit:eccentricity
+            {
+              set ecc to orbit:eccentricity.
+              set power to 1.
+              if orbit:eccentricity < .1
+                {
+                  set power to max(.02, orbit:eccentricity*10).
+                }
+
+              set radius to altitude+orbit:body:radius.
+              set gForce to constant:G*mass*orbit:body:mass/radius^2.
+              set cForce to mass*ship:velocity:orbit:mag^2/radius.
+              set totalForce to gForce - cForce.
+
+              set thrust to power*maxThrust.
+
+              if thrust^2-totalForce^2 < 0
+                {
+                  print "Aborting... not enough thrust available." at (5,8).
+                  break.
+                }
+
+              set angle to arctan(totalForce/sqrt(thrust^2-totalForce^2)).
+
+              lock throttle to power.
+              lock steering to up + R(0,angle-90,180).
+              wait 0.1.
+            }
         }
       else
         {
-          print "                                 " at (5,8).
+          print "Waiting to reach Apoapsis        " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
         }.
   }.
 
-lock throttle to 0.
-set burnFlag to false.
-set warpFlag1 to 0.
-set warpFlag2 to 1.
-
-print "Waiting for correction burn      " at (5,8).
-
-until ship:apoapsis <= orbit+(orbit*0.025)
-  {
-    lock steering to retrograde.
-      if burnFlag
-        {
-          print "Performing correction burn             " at (5,8).
-          print "Apoapsis.: "+round(ship:apoapsis,0)+" " at (0,row+1).
-          print "Periapsis: "+round(ship:periapsis,0)+" " at (0,row+2).
-          print "ETA......: "+round(eta:periapsis,0)+" " at (0,row+3).
-        }
-      else if eta:periapsis < 30
-        {
-          print "                                 " at (5,8).
-          print "Apoapsis.: "+round(ship:apoapsis,0)+" " at (0,row+1).
-          print "Periapsis: "+round(ship:periapsis,0)+" " at (0,row+2).
-          print "ETA......: "+round(eta:periapsis,0)+" " at (0,row+3).
-          lock throttle to 1.
-        }
-      else
-        {
-          print "                                 " at (5,8).
-          print "Apoapsis.: "+round(ship:apoapsis,0)+" " at (0,row+1).
-          print "Periapsis: "+round(ship:periapsis,0)+" " at (0,row+2).
-          print "ETA......: "+round(eta:periapsis,0)+" " at (0,row+3).
-        }.
-  }.
-
-set warpFlag2 to 0.
 lock throttle to 0.
 set burnFlag to false.
 
