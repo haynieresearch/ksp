@@ -30,9 +30,15 @@ set maxPitch to 90.
 set minPitch to 0.
 set stepSpeed to 75.
 set step to 5.
-set massTons to round(ship:wetmass,2).
 set solid to 25.
 set row to 9.
+
+set massTons to round(ship:wetmass,2).
+if massTons > 500
+  {
+    set minSpeed to 125.
+    set stepSpeed to 100.
+  }
 
 clearscreen.
 print "************ LAUNCH GUIDANCE COMPUTER ************".
@@ -81,10 +87,18 @@ for eng in englist
       }.
   }.
 
+sas off.
+rcs off.
+
+lock steering to up + R(0,0,180).
+lock throttle to 1.
+
+print "IN FLIGHT            " at (11,4).
+
 when maxthrust = 0 then
   {
-    print "Jettisoning boosters                   " at (5,8).
     stage.
+    preserve.
   }
 
 when stage:liquidfuel = 0 then
@@ -93,18 +107,11 @@ when stage:liquidfuel = 0 then
     stage.
   }.
 
-when stage:solidfuel < varSrbEmpty then
+when stage:solidfuel < varSrbEmpty and altitude > 25000 then
   {
     print "Jettisoning boosters                   " at (5,8).
     stage.
   }.
-
-sas off.
-rcs off.
-lock throttle to 1.
-
-lock steering to up + R(0,0,180).
-print "IN FLIGHT            " at (11,4).
 
 until ship:apoapsis > orbitAlt
   {
