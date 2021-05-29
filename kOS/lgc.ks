@@ -11,6 +11,19 @@
 //See the License for the specific language governing permissions and
 //limitations under the License.
 
+//This script is designed to be used with kOS: Kerbal Operating System with the
+//Kerbal Space Program. kOS is a programmable autopilot mod.
+//Link to kOS: https://ksp-kos.github.io/KOS/
+
+//To use this script save inside Ships/Script which are in the KSP root directory.
+//You will need to place one of the kOS devices on your ship, and right click
+//to access the terminal.
+
+//Type "switch to 0." and press enter to access the scripts in Ships/Script.
+//To run the LGC type "run lgc(80000)." and press enter; where 80000 is the
+//desired orbital altitude. You can set this to any number your ship is
+//capable of, as long as it is >= 75000.
+
 declare parameter orbitAlt.
 set minSpeed to 100.
 set maxPitch to 90.
