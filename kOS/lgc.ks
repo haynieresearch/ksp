@@ -108,7 +108,7 @@ when ship:apoapsis > orbit+(orbit*0.025) and eta:periapsis > 60 and warpFlag2 = 
   {
     rcs off.
     wait 0.5.
-    set kuniverse:timewarp:warp to 6.
+    set kuniverse:timewarp:warp to 4.
   }.
 
 when eta:periapsis <= 60 and warpFlag2 = 1 then
@@ -181,7 +181,7 @@ until ship:apoapsis > orbit
 
 lock throttle to 0.
 set warpFlag1 to 1.
-set varBurn to false.
+set burnFlag to false.
 
 print "Activating RCS                      " at (5,8).
 rcs on.
@@ -189,14 +189,14 @@ rcs on.
 until ship:periapsis > orbit
   {
     lock steering to prograde.
-      if varBurn
+      if burnFlag
         {
           print "Performing orbit burn             " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
         }
-      else if eta:apoapsis <= 30
+      else if eta:apoapsis < 30
         {
           print "                                 " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
@@ -214,7 +214,7 @@ until ship:periapsis > orbit
   }.
 
 lock throttle to 0.
-set varBurn to false.
+set burnFlag to false.
 set warpFlag1 to 0.
 set warpFlag2 to 1.
 
@@ -223,7 +223,7 @@ print "Waiting for correction burn      " at (5,8).
 until ship:apoapsis <= orbit+(orbit*0.025)
   {
     lock steering to retrograde.
-      if varBurn
+      if burnFlag
         {
           print "Performing correction burn             " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+" " at (0,row+1).
@@ -249,7 +249,7 @@ until ship:apoapsis <= orbit+(orbit*0.025)
 
 set warpFlag2 to 0.
 lock throttle to 0.
-set varBurn to false.
+set burnFlag to false.
 
 print "ORBIT            " at (11,4).
 print "Stable orbit                       " at (5,8).
