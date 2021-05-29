@@ -15,42 +15,16 @@ declare parameter orbitAlt.
 set minSpeed to 100.
 set maxPitch to 90.
 set minPitch to 0.
+set stepSpeed to 75.
 set step to 5.
-
 set massTons to round(ship:wetmass,2).
-if massTons <= 100
-  {
-    set stepSpeed to 75.
-    set sizeTxt to "Ultralight".
-  }
-else if massTons > 100 and massTons <= 250
-  {
-    set stepSpeed to 60.
-    set sizeTxt to "Light".
-  }
-else if massTons > 250 and massTons <= 500
-  {
-    set stepSpeed to 60.
-    set sizeTxt to "Medium".
-  }
-else if massTons > 500 and massTons <= 1000
-  {
-    set stepSpeed to 60.
-    set sizeTxt to "Large".
-  }
-else if massTons > 1500
-  {
-    set stepSpeed to 60.
-    set sizeTxt to "Heavy".
-  }
-
 set solid to 25.
 set row to 9.
 
 clearscreen.
 print "************ LAUNCH GUIDANCE COMPUTER ************".
 print "Craft....: "+ship:shipname.
-print "Type.....: "+sizeTxt+" "+ship:type.
+print "Type.....: "+ship:type.
 print "Mass.....: "+massTons+"t".
 print "Status...: "+ship:status.
 print "Target AP: "+orbitAlt.
@@ -172,7 +146,7 @@ until ship:periapsis > orbitAlt
           print "Periapsis: "+round(ship:periapsis,0)+"    " at (0,row+2).
           print "ETA......: "+round(eta:apoapsis,0)+"    " at (0,row+3).
         }
-      else if eta:apoapsis < 5
+      else if eta:apoapsis < 15
         {
           print "                                 " at (5,8).
           print "Apoapsis.: "+round(ship:apoapsis,0)+"    " at (0,row+1).
