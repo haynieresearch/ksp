@@ -1,0 +1,1 @@
+/Applications/KSP_osx/Ships/Script/lgc.ks
