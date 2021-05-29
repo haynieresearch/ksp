@@ -14,13 +14,13 @@
 declare parameter orbit.
 set minSpeed to 100.
 set maxPitch to 90.
-set minPitch to 45.
+set minPitch to 0.
 set step to 5.
 
 set massTons to round(ship:wetmass,2).
 if massTons <= 100
   {
-    set stepSpeed to 70.
+    set stepSpeed to 60.
     set sizeTxt to "Ultralight".
   }
 else if massTons > 100 and massTons <= 250
@@ -142,7 +142,7 @@ lock throttle to 1.
 lock steering to up + R(0,0,180).
 print "IN FLIGHT            " at (11,4).
 
-until ship:apoapsis > orbit
+until ship:apoapsis > orbit-(orbit*0.1)
   {
     if ship:apoapsis < 45000 and ship:velocity:surface:mag >= 1500
       {
