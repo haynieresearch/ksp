@@ -180,6 +180,7 @@ until ship:periapsis > orbitAlt
 
           until ecc < orbit:eccentricity
             {
+              print "Mass.....: "+round(ship:mass,2)+"t" at (0,3). print "(ΔV: "+round(ship:deltav:current,2)+"m/s)" at (25,3).
               set ecc to orbit:eccentricity.
               set power to 1.
               if orbit:eccentricity < .1
