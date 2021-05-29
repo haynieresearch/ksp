@@ -44,7 +44,7 @@ clearscreen.
 print "************ LAUNCH GUIDANCE COMPUTER ************".
 print "Craft....: "+ship:shipname.
 print "Type.....: "+ship:type.
-print "Mass.....: "+massTons+"t".
+print "Mass.....: "+round(ship:mass,2)+"t". print "(ΔV: "+round(ship:deltav:current,2)+"m/s)" at (25,3).
 print "Status...: "+ship:status.
 print "Target AP: "+orbitAlt.
 print "T-.......: 00:00:00".
@@ -115,6 +115,7 @@ when stage:solidfuel < varSrbEmpty and altitude > 25000 then
 
 until ship:apoapsis > orbitAlt
   {
+    print "Mass.....: "+round(ship:mass,2)+"t" at (0,3). print "(ΔV: "+round(ship:deltav:current,2)+"m/s)" at (25,3).
     if ship:apoapsis < 45000 and ship:velocity:surface:mag >= 1500
       {
         lock throttle to 0.5.
@@ -158,6 +159,7 @@ rcs on.
 
 until ship:periapsis > orbitAlt
   {
+    print "Mass.....: "+round(ship:mass,2)+"t" at (0,3). print "(ΔV: "+round(ship:deltav:current,2)+"m/s)" at (25,3).
     lock steering to up + R(0,-90,180).
       if burnFlag
         {
@@ -217,6 +219,7 @@ until ship:periapsis > orbitAlt
 lock throttle to 0.
 set burnFlag to false.
 
+print "Mass.....: "+round(ship:mass,2)+"t" at (0,3). print "(ΔV: "+round(ship:deltav:current,2)+"m/s)" at (25,3).
 print "ORBIT            " at (11,4).
 print "Stable orbit                       " at (5,8).
 print "                         " at (0,row+1).
