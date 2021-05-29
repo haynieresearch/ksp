@@ -7,32 +7,32 @@ set step to 5.
 set massTons to round(ship:wetmass,2).
 if massTons <= 100
   {
-    set stepSpeed to 60.
+    set stepSpeed to 50.
     set minSpeed to 100.
     set sizeTxt to "Ultralight".
   }
 else if massTons > 100 and massTons <= 250
   {
-    set stepSpeed to 60.
-    set minSpeed to 95.
+    set stepSpeed to 50.
+    set minSpeed to 100.
     set sizeTxt to "Light".
   }
 else if massTons > 250 and massTons <= 500
   {
-    set stepSpeed to 60.
+    set stepSpeed to 50.
     set minSpeed to 100.
     set sizeTxt to "Medium".
   }
 else if massTons > 500 and massTons <= 1000
   {
-    set stepSpeed to 60.
-    set minSpeed to 110.
+    set stepSpeed to 50.
+    set minSpeed to 100.
     set sizeTxt to "Large".
   }
 else if massTons > 1500
   {
-    set stepSpeed to 60.
-    set minSpeed to 120.
+    set stepSpeed to 50.
+    set minSpeed to 100.
     set sizeTxt to "Heavy".
   }
 
